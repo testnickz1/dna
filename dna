@@ -1,0 +1,76 @@
+{
+
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 600;
+    private static final int BASE_PAIR_COUNT = 20;
+    private static final double HELIX_RADIUS = 100;
+    private static final double BASE_SPACING = 20;
+    private static final double ROTATION_SPEED = 5;
+
+    private double angle = 0;
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("DNA Animation");
+
+        Group root = new Group();
+        Canvas canvas = new Canvas(WIDTH, HEIGHT);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        root.getChildren().add(canvas);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), e -> {
+            angle += Math.toRadians(ROTATION_SPEED);
+            drawDNA(gc);
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
+        primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
+        primaryStage.show();
+    }
+
+    private void drawDNA(GraphicsContext gc) {
+        gc.clearRect(0, 0, WIDTH, HEIGHT);
+
+        double centerX = WIDTH / 2;
+        double centerY = HEIGHT / 2;
+        Color[][] baseColors = {{Color.RED, Color.YELLOW}, {Color.BLUE, Color.RED}, {Color.YELLOW, Color.RED}, {Color.BLUE, Color.GREEN}};
+
+        for (int i = 0; i < BASE_PAIR_COUNT; i++) {
+            double yOffset = (i - BASE_PAIR_COUNT / 2.0) * BASE_SPACING;
+            double theta = angle + i * Math.PI / BASE_PAIR_COUNT;
+
+            double xLeft = centerX + HELIX_RADIUS * Math.cos(theta);
+            double xRight = centerX - HELIX_RADIUS * Math.cos(theta);
+            double y = centerY + yOffset;
+
+            int colorIndex = i % baseColors.length;
+
+            gc.setStroke(baseColors[colorIndex][0]);
+            gc.setLineWidth(2);
+            gc.strokeLine(xLeft, y, centerX, y);
+
+            gc.setStroke(baseColors[colorIndex][1]);
+            gc.strokeLine(centerX, y, xRight, y);
+
+            gc.setFill(baseColors[colorIndex][0]);
+            gc.fillOval(xLeft - 5, y - 5, 10, 10);
+
+            gc.setFill(baseColors[colorIndex][1]);
+            gc.fillOval(xRight - 5, y - 5, 10, 10);
+        }
+
+        String[] labels = {"Тимин", "Аденин", "Цитозин", "Гуанин"};
+        Color[] legendColors = {Color.RED, Color.YELLOW, Color.BLUE, Color.GREEN};
+        for (int i = 0; i < labels.length; i++) {
+            gc.setFill(legendColors[i]);
+            gc.fillRect(WIDTH - 120, 50 + i * 20, 10, 10);
+            gc.setFill(Color.BLACK);
+            gc.fillText(labels[i], WIDTH - 100, 60 + i * 20);
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
