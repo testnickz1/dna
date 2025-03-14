@@ -1,4 +1,17 @@
-{
+package org.example.demo4;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class HelloApplication extends Application {
 
     private static final int WIDTH = 600;
     private static final int HEIGHT = 600;
@@ -60,6 +73,7 @@
             gc.fillOval(xRight - 5, y - 5, 10, 10);
         }
 
+        // Добавляем легенду
         String[] labels = {"Тимин", "Аденин", "Цитозин", "Гуанин"};
         Color[] legendColors = {Color.RED, Color.YELLOW, Color.BLUE, Color.GREEN};
         for (int i = 0; i < labels.length; i++) {
